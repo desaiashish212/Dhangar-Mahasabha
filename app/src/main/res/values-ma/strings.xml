@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">धनगर महासभा</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="drawer_open">Slider Menu Opened</string>
+    <string name="drawer_close">Slider Menu Closed</string>
+
+    <!-- Nav Drawer Menu Items -->
+    <string-array name="nav_drawer_items">
+        <item >ताज्या बातम्या</item>
+        <item >महत्त्वाच्या बातम्या</item>
+        <item >राष्ट्रीय</item>
+        <item >वधु वर तथा विवाह विशेष</item>
+        <item >महाराष्ट्र</item>
+        <item >कैल समाजाच्या</item>
+        <item>साहित्यिकांचे विचार</item>
+        <item >मुक्तचिंतन</item>
+        <item>संपादकीय</item>
+        <item>यशोगाथा </item>
+        <item>मुंबई</item>
+        <item>पुणे </item>
+        <item>मराठवाडा </item>
+        <item>पश्चिम महाराष्टर  </item>
+        <item>उत्तर महाराष्ट्र</item>
+        <item>विदर्भ</item>
+        <item>नोकरी विशेष</item>
+        <item>दिन विशेष</item>
+    </string-array>
+
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_home</item>
+        <item>@drawable/ic_people</item>
+        <item>@drawable/ic_photos</item>
+        <item>@drawable/ic_communities</item>
+        <item>@drawable/ic_pages</item>
+        <item>@drawable/ic_whats_hot</item>
+        <item>@drawable/ic_home</item>
+        <item>@drawable/ic_people</item>
+        <item>@drawable/ic_photos</item>
+        <item>@drawable/ic_communities</item>
+        <item>@drawable/ic_whats_hot</item>
+        <item>@drawable/ic_pages</item>
+        <item>@drawable/ic_whats_hot</item>
+        <item>@drawable/ic_home</item>
+        <item>@drawable/ic_people</item>
+        <item>@drawable/ic_photos</item>
+        <item>@drawable/ic_communities</item>
+        <item>@drawable/ic_whats_hot</item>
+    </array>
+
+    <!-- Content Description -->
+    <string name="desc_list_item_icon">Item Icon</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tajya" > ताज्या बातम्या </string>
+    <string name="rashtriy"> राष्ट्रीय </string>
+    <string name="mahatvachya"> महत्त्वाच्या बातम्या</string>
+    <string name="vadhi_var"> वधु वर तथा विवाह विशेष </string>
+    <string name="kaol">कैल समाजाच्य ा</string>
+    <string name="maharashtra">महाराष्ट्र</string>
+    <string name="muktchintan">मुक्तचिंतन </string>
+    <string name="sapadkiya">संपादकीय </string>
+    <string name="yashogatha">यशोगाथा </string>
+    <string name="mumbai">मुंबई </string>
+    <string name="sahityik">साहित्यिकांचे विचार </string>
+    <string name="pune">पुणे </string>
+    <string name="marathvada">मराठवाडा </string>
+    <string name="west_maharatra" >पश्चिम महाराष्टर  </string>
+    <string name="north_maharashtra">उत्तर महाराष्ट्र</string>
+    <string name="vitharbh">विदर्भ</string>
+    <string name="nokari_vishesh">नोकरी विशेष</string>
+    <string name="din_vishesh">दिन विशेष</string>
+    
+    
+    <string name="title_activity_about_as">AboutAsActivity</string>
+
+</resources>

@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.innovators.localizationactivity">
+
+
+    <application>
+        <activity
+            android:name=".BlankDummyActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar" />
+    </application>
+</manifest>

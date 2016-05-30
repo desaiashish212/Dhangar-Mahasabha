@@ -1,5 +1,6 @@
 package com.dhangarmahasabha.innovators.ui.registration;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.initilization.Initilization;
 import com.dhangarmahasabha.innovators.ui.welcome.WelcomeActivity;
 import com.dhangarmahasabha.innovators.util.Config;
+import com.dhangarmahasabha.innovators.util.DialogUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 import com.innovators.localizationactivity.LocalizationActivity;
 
@@ -31,6 +33,7 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
     private TextView txtHindi;
     private TextView txtEnglish;
     private int status = 1;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,7 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
         txtMarathi = (TextView) findViewById(R.id.txt_marathi_lan);
         txtHindi = (TextView) findViewById(R.id.txt_hindi_lan);
         txtEnglish = (TextView) findViewById(R.id.txt_english_lan);
+        progressDialog = DialogUtils.getProgressDialog(this);
 
     }
 
@@ -53,6 +57,7 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
         txtMarathi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 status = 1;
                 updateLanguage(status);
             }
@@ -61,6 +66,7 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
         txtHindi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 status = 2;
                 updateLanguage(status);
             }
@@ -69,6 +75,7 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
         txtEnglish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 status = 2;
                 updateLanguage(status);
             }
@@ -101,6 +108,7 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
                         }else if (status==3){
                             setLanguage("en");
                         }
+                        progressDialog.dismiss();
                         startActivity(new Intent(ChooseLanguageActivity.this, WelcomeActivity.class));
                         finish();
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
@@ -121,6 +129,7 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error: " + error.getMessage());
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
             }

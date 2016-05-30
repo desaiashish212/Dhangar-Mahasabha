@@ -13,6 +13,7 @@
     <string name="signup">Don\'t have account? Sign Up</string>
     <string name="defaultmsg">Message sent by server will appear here.</string>
     <string name="msg_title">Message</string>
+    <string name="please_wait">Please Wait...</string>
     <string name="user_title">Hello User</string>
     <array name="state_array">
         <item >Andhra Pradesh</item>

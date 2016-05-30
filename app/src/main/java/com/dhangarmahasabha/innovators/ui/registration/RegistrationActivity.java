@@ -1,5 +1,6 @@
 package com.dhangarmahasabha.innovators.ui.registration;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.dhangarmahasabha.innovators.MyApplication;
 import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.initilization.Initilization;
 import com.dhangarmahasabha.innovators.util.Config;
+import com.dhangarmahasabha.innovators.util.DialogUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -57,6 +59,8 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
     private String regId = "";
     private static final String REG_ID = "regId";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,7 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
         progressBar = (ProgressBar) findViewById(R.id.progressBar1);
         aq = new AQuery(this);
         prefManager = new PrefManager(this);
+        progressDialog = DialogUtils.getProgressDialog(this);
 
         ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item,getResources().getStringArray(R.array.state_array));
         spState.setAdapter(stateAdapter);
@@ -105,7 +110,7 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
                 String district = spDistrict.getSelectedItem().toString();
                 if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(mobileNo) && !TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)){
                     if (checkPlayServices()) {
-
+                        progressDialog.show();
                         // Register Device in GCM Server
                         registerInBackground(userName, mobileNo,state,district);
                     }
@@ -239,6 +244,7 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
 
                     if (!error) {
                         prefManager.setIsWaitingForSms(true);
+                        progressDialog.dismiss();
                         Intent intent = new Intent(RegistrationActivity.this,MobileVerificationActivity.class);
                         intent.putExtra("otp",otp);
                         startActivity(intent);
@@ -258,7 +264,7 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
                     Toast.makeText(getApplicationContext(),
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
-
+                     progressDialog.dismiss();
                     progressBar.setVisibility(View.GONE);
                 }
 
@@ -268,6 +274,7 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error: " + error.getMessage());
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);

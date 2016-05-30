@@ -2,6 +2,7 @@ package com.dhangarmahasabha.innovators.ui.registration;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import com.dhangarmahasabha.innovators.MyApplication;
 import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.initilization.Initilization;
 import com.dhangarmahasabha.innovators.util.Config;
+import com.dhangarmahasabha.innovators.util.DialogUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,6 +62,7 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
     private AQuery aq;
     private PrefManager prefManager;
     static final int DATE_PICKER_ID = 1111;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,7 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
         prefManager = new PrefManager(this);
         System.out.println("District:"+prefManager.getDistrict());
         updateCitySpinnerCtrl(prefManager.getDistrict());
+        progressDialog = DialogUtils.getProgressDialog(this);
 
     }
 
@@ -108,6 +112,7 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
                 String city = setText(spCity.getSelectedItem().toString());
                 String pincode = setText(edtPinCode.getText().toString().trim());
                 String occopation = setText(edtOccupation.getText().toString().trim());
+                progressDialog.show();
                 updateProfile(name,mobile,email,dob,city,pincode,occopation);
             }
         });
@@ -187,6 +192,7 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
 
                     if (!error) {
                         prefManager.updateProfile(name,mobile,email,dob,city,pincode,occupation);
+                        progressDialog.dismiss();
                         startActivity(new Intent(UserProfileActivity.this,ChooseLanguageActivity.class));
                         finish();
 
@@ -214,6 +220,7 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error: " + error.getMessage());
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
                // progressBar.setVisibility(View.GONE);

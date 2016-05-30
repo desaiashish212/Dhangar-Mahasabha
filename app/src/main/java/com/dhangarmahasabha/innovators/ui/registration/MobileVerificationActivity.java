@@ -1,5 +1,6 @@
 package com.dhangarmahasabha.innovators.ui.registration;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.dhangarmahasabha.innovators.MyApplication;
 import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.initilization.Initilization;
 import com.dhangarmahasabha.innovators.util.Config;
+import com.dhangarmahasabha.innovators.util.DialogUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 
 import org.json.JSONException;
@@ -35,6 +37,7 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
     private Button btnBack;
     private ImageButton ibResendOtp;
     private PrefManager prefManager;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -54,6 +57,7 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
         prefManager = new PrefManager(this);
         Intent intent = getIntent();
         edtOTP.setText(intent.getExtras().getString("otp"));
+        progressDialog = DialogUtils.getProgressDialog(this);
     }
 
     @Override
@@ -63,6 +67,7 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
             public void onClick(View v) {
                 String otp = edtOTP.getText().toString().trim();
                 if (!TextUtils.isEmpty(otp)){
+                    progressDialog.show();
                     verifyOtp(otp);
                 }else {
                     Toast.makeText(MobileVerificationActivity.this,"Enter OTP",Toast.LENGTH_SHORT).show();
@@ -123,7 +128,7 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
                         PrefManager pref = new PrefManager(getApplicationContext());
                         pref.updateProfile(name,mobile_no,state,district,gcm_reg_id,email,birth,city,pincode,occupation);
                         pref.setIsWaitingForSms(false);
-
+                        progressDialog.dismiss();
                         Intent intent = new Intent(MobileVerificationActivity.this, UserProfileActivity.class);
                         startActivity(intent);
                         finish();
@@ -146,6 +151,7 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error: " + error.getMessage());
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
             }

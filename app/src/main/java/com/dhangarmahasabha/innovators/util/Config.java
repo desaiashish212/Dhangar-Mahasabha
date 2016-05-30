@@ -12,6 +12,7 @@ public class Config {
     public static String UPDATE_URL = "http://192.168.43.134/new/updateProfile.php";
     public static String URL_GET_CATEGORY = "http://192.168.43.134/new/category.php";
     public static String URL_ALL_NEWS = "http://192.168.43.134/new/get_all_news.php";
+    public static String URL_LANG_UPDATE = "http://192.168.43.134/new/languageUpdate.php";
     public static String IMAGE_URL ="http://192.168.43.134/admin/";
     public static final String GOOGLE_PROJ_ID = "355345256550";
 }

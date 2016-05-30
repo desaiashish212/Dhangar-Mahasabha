@@ -42,14 +42,21 @@
             android:name=".ui.registration.UserProfileActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".ui.welcome.WelcomeActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
         <activity android:name=".ui.registration.ChooseLanguageActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme"/>
         <activity android:name=".ui.news.ViewNews"
             android:theme="@style/MyAppTheme"
             android:parentActivityName=".MainActivity"/>
+        <supports-screens android:anyDensity="true"
+            android:largeScreens="true"
+            android:smallScreens="true" />
     </application>
 
 

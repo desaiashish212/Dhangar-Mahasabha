@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.model.News;
+import com.dhangarmahasabha.innovators.ui.news.ViewNews;
 import com.dhangarmahasabha.innovators.util.Config;
 import com.dhangarmahasabha.innovators.util.ConstCore;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -84,6 +85,7 @@ public class NewsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
         final News news = listData.get(position);
+        final String id = String.valueOf(news.getNid());
         final String newsTitle = news.gettitle();
         final String newsDate = news.getdate();
         final String newsTime = news.gettime();
@@ -107,19 +109,17 @@ public class NewsAdapter extends BaseAdapter {
             @Override
             public void onClick(View arg0) {
                 // Get the position
-                //resultp = listData.get(position);
-//                Intent intent = new Intent(context, View_News.class);
-//                // Pass all data rank
-//                intent.putExtra("barTitle", barTitle);
-//                // Pass all data country
-//                intent.putExtra("title", newsTitle);
-//                // Pass all data population
-//                intent.putExtra("news", news.getnews());
-//                // Pass all data flag
-//                intent.putExtra("time", newsDate+" "+newsTime);
-//                intent.putExtra("path", ConstCore.IMAGE_URL + newsPath);
-                // Start SingleItemView Class
-             //   context.startActivity(intent);
+                Intent intent = new Intent(context, ViewNews.class);
+                // Pass all data rank
+                // Pass all data country
+                intent.putExtra("id",id);
+                intent.putExtra("title", newsTitle);
+                // Pass all data population
+                intent.putExtra("news", news.getnews());
+                // Pass all data flag
+                intent.putExtra("time", newsDate+" "+newsTime);
+                intent.putExtra("path", newsPath);
+                context.startActivity(intent);
             }
         });
         return view;

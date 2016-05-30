@@ -52,6 +52,8 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
         btnBack = (Button) findViewById(R.id.btn_back);
         ibResendOtp = (ImageButton) findViewById(R.id.imgBtn_resend);
         prefManager = new PrefManager(this);
+        Intent intent = getIntent();
+        edtOTP.setText(intent.getExtras().getString("otp"));
     }
 
     @Override

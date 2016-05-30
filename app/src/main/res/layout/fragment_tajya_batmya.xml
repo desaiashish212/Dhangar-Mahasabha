@@ -1,23 +1,15 @@
-<LinearLayout
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
-    <ImageView
-        android:id="@+id/ads"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:src="@drawable/add"
-        android:scaleType="fitXY"
-        />
-<FrameLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/counter_text_color"
-tools:context="com.innovators.dhangar.ui.fragments.TajyaBatmyaFragment">
+android:layout_height="match_parent">
 
-<!-- TODO: Update blank fragment layout -->
+<ImageView
+    android:id="@+id/ads"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:src="@drawable/add"
+    android:scaleType="fitXY"
+    />
+
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
@@ -26,11 +18,21 @@ tools:context="com.innovators.dhangar.ui.fragments.TajyaBatmyaFragment">
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/list"
-        android:dividerHeight="1dp">
+        android:dividerHeight="1dp"
+        android:scrollbars="none">
     </ListView>
 
 </android.support.v4.widget.SwipeRefreshLayout>
 
+<TextView
+    android:id="@+id/stickyView"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#222"
+    android:gravity="center"
+    android:paddingLeft="10dp"
+    android:text="AndroidDhina"
+    android:textColor="#fff"
+    android:textSize="20sp"
+    android:textStyle="bold" />
 </FrameLayout>
-
-</LinearLayout>

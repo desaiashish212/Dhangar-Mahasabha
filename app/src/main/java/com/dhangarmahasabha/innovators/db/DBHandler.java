@@ -13,6 +13,7 @@ import com.dhangarmahasabha.innovators.model.News;
 import com.innovators.localizationactivity.LocalizationActivity;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by AD on 1/14/2016.
@@ -24,6 +25,7 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
     private static String TABLE_NAME_HINDI = "news_hindi";
     private static String TABLE_NAME_ENGLISH = "news_english";
     private static String TABLE_NAME_CATEGORY = "news_category";
+    private static String TABLE_NAME_ADVERTISE = "advertise";
     private static final String KEY_ID = "id";
     private static final String KEY_NID = "nid";
     private static final String KEY_TITLE = "title";
@@ -38,6 +40,10 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
     private static final String KEY_CATNAME = "cat_name";
     private static final String KEY_LANGUAGE = "lang_status";
 
+    private static final String KEY_ADDSID = "adds_id";
+    private static final String KEY_ADDSPATH = "adds_path";
+    private static final String KEY_ADDSSTATUS= "adds_status";
+
     private String language = null;
 
     String CREATE_TABLE_MARATHI = "CREATE TABLE "+TABLE_NAME_MARATHI+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_NID+" INTEGER,"+KEY_TITLE+" TEXT,"+KEY_NEWS+" TEXT,"+KEY_TIME+" TEXT,"+KEY_DATE+" TEXT,"+KEY_STATUS+" TEXT,"+KEY_PATH+" TEXT,"+KEY_IMAGE+" BLOB"+")";
@@ -50,6 +56,9 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
     String CREATE_TABLE_CATEGORY = "CREATE TABLE "+TABLE_NAME_CATEGORY+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_CATID+" INTEGER,"+KEY_CATNAME+" TEXT,"+KEY_LANGUAGE+" INTEGER"+")";
     String DROP_TABLE_CATEGORY = "DROP TABLE IF EXISTS "+TABLE_NAME_CATEGORY;
 
+    String CREATE_TABLE_ADVERTISE = "CREATE TABLE "+TABLE_NAME_ADVERTISE+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_ADDSID+" INTEGER,"+KEY_ADDSPATH+" TEXT,"+KEY_ADDSSTATUS+" INTEGER"+")";
+    String DROP_TABLE_ADVERTISE = "DROP TABLE IF EXISTS "+TABLE_NAME_ADVERTISE;
+
     public DBHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -60,6 +69,7 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
         db.execSQL(CREATE_TABLE_HINDI);
         db.execSQL(CREATE_TABLE_ENGLISH);
         db.execSQL(CREATE_TABLE_CATEGORY);
+        db.execSQL(CREATE_TABLE_ADVERTISE);
 
     }
 
@@ -69,6 +79,7 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
         db.execSQL(DROP_TABLE_HINDI);
         db.execSQL(DROP_TABLE_ENGLISH);
         db.execSQL(DROP_TABLE_CATEGORY);
+        db.execSQL(DROP_TABLE_ADVERTISE);
         onCreate(db);
     }
 
@@ -142,7 +153,6 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
     @Override
     public void addCategory(Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
-        language = LocalizationActivity.getLanguage();
         try{
             ContentValues values = new ContentValues();
             values.put(KEY_CATID, category.getCat_id());
@@ -150,6 +160,21 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
             values.put(KEY_LANGUAGE, category.getLang_status());
 
                 db.insert(TABLE_NAME_CATEGORY, null, values);
+            db.close();
+        }catch (Exception e){
+            Log.e("problem",e+"");
+        }
+    }
+
+    public void addBanner(int id,String path,int status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            ContentValues values = new ContentValues();
+            values.put(KEY_ADDSID, id);
+            values.put(KEY_ADDSPATH, path);
+            values.put(KEY_ADDSSTATUS, status);
+
+            db.insert(TABLE_NAME_ADVERTISE, null, values);
             db.close();
         }catch (Exception e){
             Log.e("problem",e+"");
@@ -312,6 +337,69 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
             Log.e("error",e+"");
         }
         return result;
+    }
+
+    public boolean getIdBanner(int id,int status) {
+        int num = 0;
+        String QUERY=null;
+        boolean result=false;
+        SQLiteDatabase db = this.getReadableDatabase();
+        try{
+
+            QUERY = "SELECT * FROM "+TABLE_NAME_ADVERTISE+" WHERE adds_id="+id+" and adds_status="+status;
+
+            Cursor cursor = db.rawQuery(QUERY, null);
+            num = cursor.getCount();
+
+            if (num>0){
+                System.out.println("iffffffff:"+id);
+                result = true;
+            }else {
+                System.out.println("elssss:"+id);
+                result = false;
+            }
+            db.close();
+            return result;
+        }catch (Exception e){
+            Log.e("error",e+"");
+        }
+        return result;
+    }
+
+    public String getBanner() {
+        int num = 0;
+        String QUERY=null;
+        String path = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        try{
+
+            QUERY = "SELECT * FROM "+TABLE_NAME_ADVERTISE;
+
+            Cursor cursor = db.rawQuery(QUERY, null);
+            num = cursor.getCount();
+            System.out.println("Counttttt:"+num);
+            if (num>0){
+                Random rand = new Random();
+
+                int randomNum = rand.nextInt((num - 1) + 1) + 1;
+                System.out.println("randomNum:"+randomNum);
+                QUERY = "SELECT * FROM "+TABLE_NAME_ADVERTISE+" WHERE id="+randomNum;
+                Cursor cursor1 = db.rawQuery(QUERY,null);
+                if(!cursor1.isLast())
+                {
+                    while (cursor1.moveToNext())
+                    {
+
+                        path = cursor1.getString(2);
+
+                    }
+                }
+            }
+            db.close();
+        }catch (Exception e){
+            Log.e("error",e+"");
+        }
+        return path;
     }
 
 }

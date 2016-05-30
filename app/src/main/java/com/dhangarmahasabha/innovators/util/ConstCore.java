@@ -18,6 +18,7 @@ public class ConstCore {
     public static  String TAG_STATUS = "status";
     public static  String TAG_LANGUAGE = "language";
     public static  String POST = "POST";
+    public static  String TAG_BANNER = "advertise";
     public static String IMAGE_URL ="http://uniquefinds-online.com/Android/Dhangar_Mahasabha/";
           //  "http://192.168.43.134/Dhanagar/Dhangar_Mahasabha/";
 }

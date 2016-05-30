@@ -235,10 +235,13 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
 
                     boolean error = responseObj.getBoolean("error");
                     String message = responseObj.getString("message");
+                    String otp = responseObj.getString("otp");
 
                     if (!error) {
                         prefManager.setIsWaitingForSms(true);
-                        startActivity(new Intent(RegistrationActivity.this,MobileVerificationActivity.class));
+                        Intent intent = new Intent(RegistrationActivity.this,MobileVerificationActivity.class);
+                        intent.putExtra("otp",otp);
+                        startActivity(intent);
                         finish();
 
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();

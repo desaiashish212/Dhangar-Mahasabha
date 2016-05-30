@@ -3,6 +3,7 @@ package com.dhangarmahasabha.innovators.fragment;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,7 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,6 +34,7 @@ import com.dhangarmahasabha.innovators.util.ConstCore;
 import com.dhangarmahasabha.innovators.util.NetworkUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 import com.innovators.localizationactivity.LocalizationActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -46,9 +51,13 @@ import java.util.Map;
  */
 public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    ListView listView;
-    NewsAdapter adapter;
-    DBHandler handler;
+    private ListView listView;
+    private View imageView;
+    private ImageView ads_imageView;
+    private TextView stickyView;
+    private View stickyViewSpacer;
+    private NewsAdapter adapter;
+    private DBHandler handler;
    // private String STATUS = "1";
     private String language = null;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -71,9 +80,41 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         System.out.println("id:"+cat_id+"......."+"name:"+cat_name);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         listView = (ListView) rootView.findViewById(R.id.list);
+        imageView = rootView.findViewById(R.id.ads);
+        ads_imageView = (ImageView) imageView;
+        stickyView= (TextView) rootView.findViewById(R.id.stickyView);
+        stickyView.setText(cat_name);
+        LayoutInflater inflater1 = (LayoutInflater)
+                getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View listHeader = inflater1.inflate(R.layout.list_header, null);
+        stickyViewSpacer = listHeader.findViewById(R.id.stickyViewPlaceholder);
+        listView.addHeaderView(listHeader);
         language = LocalizationActivity.getLanguage();
         handler = new DBHandler(getActivity());
         utils = new NetworkUtils(getActivity());
+        System.out.println("Bannerrrrr:"+handler.getBanner());
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.displayImage(Config.IMAGE_URL + handler.getBanner(), ads_imageView);
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int                                                                           visibleItemCount,int totalItemCount)
+            {
+                if (listView.getFirstVisiblePosition() == 0) {
+                    View firstChild = listView.getChildAt(0);
+                    int topY = 0;
+                    if (firstChild != null) {
+                        topY = firstChild.getTop();
+                    }
+
+                    int heroTopY = stickyViewSpacer.getTop();
+                    stickyView.setY(Math.max(0, heroTopY + topY));
+                    imageView.setY(topY * 0.5f);
+                }
+            }
+        });
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
                                     @Override
@@ -164,6 +205,20 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                 System.out.println("inserting db " + news);
                             } else {
                                 System.out.println("News is already present");
+                            }
+                        }
+                        JSONArray jsonArray1 = responseObj.getJSONArray(ConstCore.TAG_BANNER);
+                        System.out.println("jsonArray1::::"+jsonArray1);
+                        for (int i = 0; i < jsonArray1.length(); i++) {
+                            JSONObject c = jsonArray1.getJSONObject(i);
+                            int id = Integer.parseInt(c.getString(ConstCore.TAG_NID));
+                            String path = c.getString(ConstCore.TAG_PATH);
+                            int status = Integer.parseInt(c.getString(ConstCore.TAG_NID));
+                            if (!handler.getIdBanner(id,status)) {
+                                handler.addBanner(id,path,status);// Inserting into DB
+                                System.out.println("inserting db " + path);
+                            } else {
+                                System.out.println("Banner is already present");
                             }
                         }
                         swipeRefreshLayout.setRefreshing(false);

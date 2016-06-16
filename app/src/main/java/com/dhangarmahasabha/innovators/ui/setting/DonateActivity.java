@@ -28,7 +28,7 @@ public class DonateActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, AboutDmActivity.class);
+        Intent intent = new Intent(context, DonateActivity.class);
         context.startActivity(intent);
     }
 

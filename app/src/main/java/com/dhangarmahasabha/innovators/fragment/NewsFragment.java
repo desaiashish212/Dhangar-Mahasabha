@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,8 +29,6 @@ import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.adaper.NewsAdapter;
 import com.dhangarmahasabha.innovators.db.DBHandler;
 import com.dhangarmahasabha.innovators.model.News;
-import com.dhangarmahasabha.innovators.newsloader.LoadAllNews;
-import com.dhangarmahasabha.innovators.ui.registration.UserProfileActivity;
 import com.dhangarmahasabha.innovators.util.Config;
 import com.dhangarmahasabha.innovators.util.ConstCore;
 import com.dhangarmahasabha.innovators.util.NetworkUtils;
@@ -36,7 +36,6 @@ import com.dhangarmahasabha.innovators.util.PrefManager;
 import com.innovators.localizationactivity.LocalizationActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +48,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private ListView listView;
     private View imageView;
@@ -64,6 +63,8 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private NetworkUtils utils;
     private String cat_id;
     private String cat_name;
+    private PrefManager manager;
+    private TextView splashText;
     public NewsFragment() {
         // Required empty public constructor
     }
@@ -83,6 +84,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         imageView = rootView.findViewById(R.id.ads);
         ads_imageView = (ImageView) imageView;
         stickyView= (TextView) rootView.findViewById(R.id.stickyView);
+        swipeRefreshLayout.setColorSchemeColors(R.color.swype_1,R.color.swype_2,R.color.swype_3,R.color.swype_4);
         stickyView.setText(cat_name);
         LayoutInflater inflater1 = (LayoutInflater)
                 getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -92,7 +94,11 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         language = LocalizationActivity.getLanguage();
         handler = new DBHandler(getActivity());
         utils = new NetworkUtils(getActivity());
+        manager = new PrefManager(getActivity());
         System.out.println("Bannerrrrr:"+handler.getBanner());
+        splashText = (TextView) rootView.findViewById(R.id.splashText);
+        splashText.setText(manager.getSplash());
+        splashText.setSelected(true);
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.displayImage(Config.IMAGE_URL + handler.getBanner(), ads_imageView);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -199,6 +205,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             news.setdate(c.getString(ConstCore.TAG_DATE));
                             news.setStatus(cat_id);
                             news.setpath(c.getString(ConstCore.TAG_PATH));
+                            news.setpath1(c.getString(ConstCore.TAG_PATH1));
                             System.out.println("iddddd:" + Integer.parseInt(c.getString(ConstCore.TAG_NID)));
                             if (!handler.getIdNews(Integer.parseInt(c.getString(ConstCore.TAG_NID)))) {
                                 handler.addNews(news);// Inserting into DB
@@ -243,8 +250,6 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onErrorResponse(VolleyError error) {
                 swipeRefreshLayout.setRefreshing(false);
                 Log.e("NewsFragment","Error: " + error.getMessage());
-                Toast.makeText(getActivity(),
-                        error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }) {
 
@@ -263,4 +268,5 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         // Adding request to request queue
         MyApplication.getInstance().addToRequestQueue(strReq);
     }
+
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/darker_gray">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+
+        android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="What new features would you like to see in this app"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        />
+
+    <EditText
+        android:id="@+id/editFeedback"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:ems="10"
+        android:gravity="left|top"
+        android:inputType="textMultiLine"
+        android:background="@color/white"
+        android:padding="10dp"
+        android:layout_marginTop="20dp">
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Send Feedback"
+        android:background="@color/bg_button_login"
+        android:onClick="send"
+        android:padding="10dp"
+        android:layout_marginTop="15dp"/>
+</LinearLayout>
+    </ScrollView>
+</LinearLayout>

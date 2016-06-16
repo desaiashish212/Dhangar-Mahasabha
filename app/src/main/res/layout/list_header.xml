@@ -6,11 +6,11 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="90dp" />
 
     <Space
         android:id="@+id/stickyViewPlaceholder"
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="30dp" />
 
 </LinearLayout>

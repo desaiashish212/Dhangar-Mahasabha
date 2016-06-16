@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#785447</color>
-    <color name="colorPrimaryDark">#5B3F36</color>
+    <color name="colorPrimary">#FFFF50</color>
+    <color name="colorPrimaryDark">#F5F500</color>
     <color name="colorAccent">#FF4081</color>
     <color name="list_item_title">#fff</color>
     <color name="list_background">#303030</color>
@@ -25,6 +25,12 @@
     <color name="bg_gradient_start">#EB5038</color>
     <color name="bg_gradient_end">#CA3822</color>
     <color name="bg_button_login">#A92815</color>
+
+
+        <color name="swype_1">#ff92ff2f</color>
+        <color name="swype_2">#ffffbc00</color>
+        <color name="swype_3">#ff12ffa0</color>
+        <color name="swype_4">#ffff6724</color>
 
 
 </resources>

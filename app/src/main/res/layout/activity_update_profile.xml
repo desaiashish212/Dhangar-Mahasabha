@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.setting.UpdateProfileActivity">
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#50000000">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/darker_gray"
+            android:padding="20dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"/>
+
+            <EditText
+                android:id="@+id/edt_name"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:hint="enter username"
+                android:background="@android:color/white"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mobile No"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/edt_mobile_no"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:hint="enter mobile no"
+                android:background="@android:color/white"
+                android:layout_marginTop="5dp"
+                android:inputType="number"
+                android:padding="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp"
+                />
+
+            <EditText
+                android:id="@+id/edt_email"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:hint="enter your email address"
+                android:background="@android:color/white"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date of Birth"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/imgBtn_calender"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/calendar"
+                        android:layout_alignParentRight="true"/>
+                    <TextView
+                        android:id="@+id/tvDob"
+                        android:layout_width="fill_parent"
+                        android:layout_height="30dp"
+                        android:background="@android:color/white"
+                        android:layout_toLeftOf="@+id/imgBtn_calender"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="City"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp"
+                />
+
+            <Spinner
+                android:background="@android:color/white"
+                android:id="@+id/citySpinner"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="Select your city"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pin Code"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/edt_pincode"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:hint="enter pin code here"
+                android:background="@android:color/white"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"
+                android:inputType="number"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Occupation"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/edt_occupation"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:hint="enter occupation here"
+                android:background="@android:color/white"
+                android:layout_marginTop="5dp"
+                android:padding="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+                <Button
+                    android:id="@+id/btn_udate_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="update profile"
+                    android:textColor="#cc0000"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:background="#ffbb23"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

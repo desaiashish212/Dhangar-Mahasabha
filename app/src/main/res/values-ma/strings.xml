@@ -28,6 +28,8 @@
         <item>दिन विशेष</item>
     </string-array>
 
+    <string name="stn_version">Version %1$s</string>
+
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
@@ -74,8 +76,9 @@
     <string name="vitharbh">विदर्भ</string>
     <string name="nokari_vishesh">नोकरी विशेष</string>
     <string name="din_vishesh">दिन विशेष</string>
-    
-    
-    <string name="title_activity_about_as">AboutAsActivity</string>
 
+
+    <string name="about_dm">http://www.dhangarmahasabha.net16.net/about_dm.html</string>
+    <string name="privacy_policy">http://www.dhangarmahasabha.net16.net/privacy.php</string>
+    <string name="donate">http://www.dhangarmahasabha.net16.net/donate.php</string>
 </resources>

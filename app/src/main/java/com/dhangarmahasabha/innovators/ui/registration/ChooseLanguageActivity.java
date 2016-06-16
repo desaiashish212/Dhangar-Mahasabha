@@ -18,6 +18,7 @@ import com.dhangarmahasabha.innovators.initilization.Initilization;
 import com.dhangarmahasabha.innovators.ui.welcome.WelcomeActivity;
 import com.dhangarmahasabha.innovators.util.Config;
 import com.dhangarmahasabha.innovators.util.DialogUtils;
+import com.dhangarmahasabha.innovators.util.NetworkUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 import com.innovators.localizationactivity.LocalizationActivity;
 
@@ -34,6 +35,8 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
     private TextView txtEnglish;
     private int status = 1;
     private ProgressDialog progressDialog;
+    private PrefManager prefManager;
+    private NetworkUtils networkUtils;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,8 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
         txtHindi = (TextView) findViewById(R.id.txt_hindi_lan);
         txtEnglish = (TextView) findViewById(R.id.txt_english_lan);
         progressDialog = DialogUtils.getProgressDialog(this);
+        prefManager = new PrefManager(this);
+        networkUtils = new NetworkUtils(this);
 
     }
 
@@ -57,27 +62,39 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
         txtMarathi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
-                status = 1;
-                updateLanguage(status);
+                if (networkUtils.isConnectingToInternet()) {
+                    progressDialog.show();
+                    status = 1;
+                    updateLanguage(status);
+                }else {
+                    Toast.makeText(ChooseLanguageActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         txtHindi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
-                status = 2;
-                updateLanguage(status);
+                if (networkUtils.isConnectingToInternet()) {
+                    progressDialog.show();
+                    status = 2;
+                    updateLanguage(status);
+                }else {
+                    Toast.makeText(ChooseLanguageActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         txtEnglish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
-                status = 2;
-                updateLanguage(status);
+                if (networkUtils.isConnectingToInternet()) {
+                    progressDialog.show();
+                    status = 3;
+                    updateLanguage(status);
+                }else {
+                    Toast.makeText(ChooseLanguageActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -101,6 +118,8 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
 
                     if (!error) {
                         // parsing the user profile information
+                        String flash = responseObj.getString("flash");
+                        prefManager.setSplash(flash);
                         if (status==1){
                             setLanguage("ma");
                         }else  if (status==2){
@@ -108,16 +127,18 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
                         }else if (status==3){
                             setLanguage("en");
                         }
+                        prefManager.setIsChooseLang(true);
                         progressDialog.dismiss();
                         startActivity(new Intent(ChooseLanguageActivity.this, WelcomeActivity.class));
                         finish();
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    //    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 
                     } else {
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                     }
 
                 } catch (JSONException e) {
+                    progressDialog.dismiss();
                     Toast.makeText(getApplicationContext(),
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
@@ -139,6 +160,7 @@ public class ChooseLanguageActivity extends LocalizationActivity implements Init
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("status", String.valueOf(statusLang));
+                params.put("mobile", prefManager.getMobileNumber());
 
                 Log.e(TAG, "Posting params: " + params.toString());
                 return params;

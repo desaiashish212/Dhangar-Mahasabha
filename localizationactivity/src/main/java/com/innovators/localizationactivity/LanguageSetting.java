@@ -60,7 +60,7 @@ public class LanguageSetting {
         return currentLanguage;
     }
 
-    private static String getLanguage(Context context) {
+    public static String getLanguage(Context context) {
         return getLanguagePreference(context).getString(KEY_LANGUAGE, DEFAULT_LANGUAGE);
     }
 

@@ -35,10 +35,12 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
     private static final String KEY_DATE = "date";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_PATH = "path";
+    private static final String KEY_PATH1 = "path1";
 
     private static final String KEY_CATID = "cat_id";
     private static final String KEY_CATNAME = "cat_name";
     private static final String KEY_LANGUAGE = "lang_status";
+    private static final String KEY_CATPRIORITY = "cat_priority";
 
     private static final String KEY_ADDSID = "adds_id";
     private static final String KEY_ADDSPATH = "adds_path";
@@ -46,14 +48,14 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
 
     private String language = null;
 
-    String CREATE_TABLE_MARATHI = "CREATE TABLE "+TABLE_NAME_MARATHI+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_NID+" INTEGER,"+KEY_TITLE+" TEXT,"+KEY_NEWS+" TEXT,"+KEY_TIME+" TEXT,"+KEY_DATE+" TEXT,"+KEY_STATUS+" TEXT,"+KEY_PATH+" TEXT,"+KEY_IMAGE+" BLOB"+")";
+    String CREATE_TABLE_MARATHI = "CREATE TABLE "+TABLE_NAME_MARATHI+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_NID+" INTEGER,"+KEY_TITLE+" TEXT,"+KEY_NEWS+" TEXT,"+KEY_TIME+" TEXT,"+KEY_DATE+" TEXT,"+KEY_STATUS+" TEXT,"+KEY_PATH+" TEXT,"+KEY_PATH1+" TEXT,"+KEY_IMAGE+" BLOB"+")";
     String DROP_TABLE_MARATHI = "DROP TABLE IF EXISTS "+TABLE_NAME_MARATHI;
-    String CREATE_TABLE_HINDI = "CREATE TABLE "+TABLE_NAME_HINDI+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_NID+" INTEGER,"+KEY_TITLE+" TEXT,"+KEY_NEWS+" TEXT,"+KEY_TIME+" TEXT,"+KEY_DATE+" TEXT,"+KEY_STATUS+" TEXT,"+KEY_PATH+" TEXT,"+KEY_IMAGE+" BLOB"+")";
+    String CREATE_TABLE_HINDI = "CREATE TABLE "+TABLE_NAME_HINDI+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_NID+" INTEGER,"+KEY_TITLE+" TEXT,"+KEY_NEWS+" TEXT,"+KEY_TIME+" TEXT,"+KEY_DATE+" TEXT,"+KEY_STATUS+" TEXT,"+KEY_PATH+" TEXT,"+KEY_PATH1+" TEXT,"+KEY_IMAGE+" BLOB"+")";
     String DROP_TABLE_HINDI = "DROP TABLE IF EXISTS "+TABLE_NAME_HINDI;
-    String CREATE_TABLE_ENGLISH = "CREATE TABLE "+TABLE_NAME_ENGLISH+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_NID+" INTEGER,"+KEY_TITLE+" TEXT,"+KEY_NEWS+" TEXT,"+KEY_TIME+" TEXT,"+KEY_DATE+" TEXT,"+KEY_STATUS+" TEXT,"+KEY_PATH+" TEXT,"+KEY_IMAGE+" BLOB"+")";
+    String CREATE_TABLE_ENGLISH = "CREATE TABLE "+TABLE_NAME_ENGLISH+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_NID+" INTEGER,"+KEY_TITLE+" TEXT,"+KEY_NEWS+" TEXT,"+KEY_TIME+" TEXT,"+KEY_DATE+" TEXT,"+KEY_STATUS+" TEXT,"+KEY_PATH+" TEXT,"+KEY_PATH1+" TEXT,"+KEY_IMAGE+" BLOB"+")";
     String DROP_TABLE_ENGLISH = "DROP TABLE IF EXISTS "+TABLE_NAME_ENGLISH;
 
-    String CREATE_TABLE_CATEGORY = "CREATE TABLE "+TABLE_NAME_CATEGORY+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_CATID+" INTEGER,"+KEY_CATNAME+" TEXT,"+KEY_LANGUAGE+" INTEGER"+")";
+    String CREATE_TABLE_CATEGORY = "CREATE TABLE "+TABLE_NAME_CATEGORY+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_CATID+" INTEGER,"+KEY_CATNAME+" TEXT,"+KEY_LANGUAGE+" INTEGER,"+KEY_CATPRIORITY+" INTEGER"+")";
     String DROP_TABLE_CATEGORY = "DROP TABLE IF EXISTS "+TABLE_NAME_CATEGORY;
 
     String CREATE_TABLE_ADVERTISE = "CREATE TABLE "+TABLE_NAME_ADVERTISE+" ("+KEY_ID+" INTEGER PRIMARY KEY,"+KEY_ADDSID+" INTEGER,"+KEY_ADDSPATH+" TEXT,"+KEY_ADDSSTATUS+" INTEGER"+")";
@@ -96,6 +98,7 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
             values.put(KEY_DATE,news.getdate());
             values.put(KEY_STATUS, news.getStatus());
             values.put(KEY_PATH, news.getpath());
+            values.put(KEY_PATH1, news.getpath1());
             System.out.println("Path inserting:" + news.getpath() + " Lang:" + language);
             if (language.equals("ma")){
                 db.insert(TABLE_NAME_MARATHI, null, values);
@@ -108,6 +111,43 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
         }catch (Exception e){
             Log.e("problem",e+"");
         }
+    }
+
+    public News getNewsByID(int id) {
+        language = LocalizationActivity.getLanguage();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String QUERY=null;
+        News news = null;
+        try{
+            news = new News();
+            if (language.equals("ma")){
+                QUERY = "SELECT * FROM "+TABLE_NAME_MARATHI+" WHERE nid="+id;
+            }else if (language.equals("hi")){
+                QUERY = "SELECT * FROM "+TABLE_NAME_HINDI+" WHERE nid="+id;
+            }else if (language.equals("en")){
+                QUERY = "SELECT * FROM "+TABLE_NAME_ENGLISH+" WHERE nid="+id;
+            }
+            Cursor cursor = db.rawQuery(QUERY,null);
+            if(!cursor.isLast())
+            {
+                while (cursor.moveToNext())
+                {
+                    news.setId(cursor.getInt(0));
+                    news.setNid(cursor.getInt(1));
+                    news.settitle(cursor.getString(2));
+                    news.setnews(cursor.getString(3));
+                    news.settime(cursor.getString(4));
+                    news.setdate(cursor.getString(5));
+                    news.setStatus(cursor.getString(6));
+                    news.setpath(cursor.getString(7));
+                    news.setpath1(cursor.getString(8));
+                }
+            }
+            db.close();
+        }catch (Exception e){
+            Log.e("error",e+"");
+        }
+        return news;
     }
 
     @Override
@@ -139,6 +179,7 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
                     news.setdate(cursor.getString(5));
                     news.setStatus(cursor.getString(6));
                     news.setpath(cursor.getString(7));
+                    news.setpath1(cursor.getString(8));
 
                     newsList.add(news);
                 }
@@ -158,6 +199,7 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
             values.put(KEY_CATID, category.getCat_id());
             values.put(KEY_CATNAME, category.getCat_name());
             values.put(KEY_LANGUAGE, category.getLang_status());
+            values.put(KEY_CATPRIORITY, category.getPriority());
 
                 db.insert(TABLE_NAME_CATEGORY, null, values);
             db.close();
@@ -181,6 +223,25 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
         }
     }
 
+    public void updateCategory(Category category){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try{
+            ContentValues values = new ContentValues();
+            values.put(KEY_CATID, category.getCat_id());
+            values.put(KEY_CATNAME, category.getCat_name());
+            values.put(KEY_LANGUAGE, category.getLang_status());
+            values.put(KEY_CATPRIORITY, category.getPriority());
+
+           // db.insert(TABLE_NAME_CATEGORY, null, values);
+            db.update(TABLE_NAME_CATEGORY, values, KEY_CATID + " = ?",
+                    new String[] { String.valueOf(category.getCat_id()) });
+            db.close();
+        }catch (Exception e){
+            Log.e("problem",e+"");
+        }
+    }
+
     @Override
     public ArrayList<Category> getAllCategory(int status) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -190,7 +251,7 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
         try{
             categoriesList = new ArrayList<Category>();
 
-                QUERY = "SELECT * FROM "+TABLE_NAME_CATEGORY+" WHERE lang_status='"+status+"'";
+                QUERY = "SELECT * FROM "+TABLE_NAME_CATEGORY+" WHERE lang_status='"+status+"'"+" ORDER BY cat_priority asc";
 
             Cursor cursor = db.rawQuery(QUERY,null);
             if(!cursor.isLast())
@@ -237,6 +298,38 @@ public class DBHandler extends SQLiteOpenHelper implements NewsListener {
         }
         return 0;
     }
+
+    public int[] getIdArray(String status){
+        int[] result = new int[getNewsCount(status)];
+        String QUERY=null;
+        int i=0;
+        language = LocalizationActivity.getLanguage();
+        SQLiteDatabase db = this.getReadableDatabase();
+        try{
+            if (language.equals("ma")){
+                QUERY = "SELECT nid FROM "+TABLE_NAME_MARATHI+" WHERE status='"+status+"'"+" ORDER BY date desc,time desc";
+            }else if (language.equals("hi")){
+                QUERY = "SELECT nid FROM "+TABLE_NAME_HINDI+" WHERE status='"+status+"'"+" ORDER BY date desc,time desc";
+            }else if (language.equals("en")){
+                QUERY = "SELECT nid FROM "+TABLE_NAME_ENGLISH+" WHERE status='"+status+"'"+" ORDER BY date desc,time desc";
+            }
+            Cursor cursor = db.rawQuery(QUERY, null);
+            if(!cursor.isLast())
+            {
+                while (cursor.moveToNext())
+                {
+
+                    result[i] = cursor.getInt(0);
+                    i++;
+                }
+            }
+            db.close();
+        }catch (Exception e){
+            Log.e("error",e+"");
+        }
+        return result;
+    }
+
     public int getCategoryCount(int status) {
         int num = 0;
         String QUERY=null;

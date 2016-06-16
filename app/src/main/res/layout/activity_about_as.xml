@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.setting.About_asActivity">
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:src="@drawable/splash"
+    android:scaleType="fitXY"
+    />
+
+    <TextView
+        android:id="@+id/version_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="14dp"
+        android:paddingTop="14dp"
+        android:textSize="18sp"
+        android:layout_centerInParent="true"
+        android:textColor="@color/bg_button_login"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="16sp"
+            android:text="© 2016 Dhangar mahasabha"
+            android:textColor="@color/cardview_light_background"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Developed by UIT Group"
+            android:textSize="16sp"
+            android:textColor="@color/cardview_light_background"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"/>
+    </LinearLayout>
+</RelativeLayout>

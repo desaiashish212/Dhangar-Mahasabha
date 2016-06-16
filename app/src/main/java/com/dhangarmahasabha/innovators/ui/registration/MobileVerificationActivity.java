@@ -21,6 +21,7 @@ import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.initilization.Initilization;
 import com.dhangarmahasabha.innovators.util.Config;
 import com.dhangarmahasabha.innovators.util.DialogUtils;
+import com.dhangarmahasabha.innovators.util.NetworkUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 
 import org.json.JSONException;
@@ -38,6 +39,8 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
     private ImageButton ibResendOtp;
     private PrefManager prefManager;
     private ProgressDialog progressDialog;
+    private NetworkUtils networkUtils;
+
 
 
     @Override
@@ -55,6 +58,7 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
         btnBack = (Button) findViewById(R.id.btn_back);
         ibResendOtp = (ImageButton) findViewById(R.id.imgBtn_resend);
         prefManager = new PrefManager(this);
+        networkUtils = new NetworkUtils(this);
         Intent intent = getIntent();
         edtOTP.setText(intent.getExtras().getString("otp"));
         progressDialog = DialogUtils.getProgressDialog(this);
@@ -67,8 +71,12 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
             public void onClick(View v) {
                 String otp = edtOTP.getText().toString().trim();
                 if (!TextUtils.isEmpty(otp)){
-                    progressDialog.show();
-                    verifyOtp(otp);
+                    if (networkUtils.isConnectingToInternet()) {
+                        progressDialog.show();
+                        verifyOtp(otp);
+                    }else  {
+                        Toast.makeText(MobileVerificationActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+                    }
                 }else {
                     Toast.makeText(MobileVerificationActivity.this,"Enter OTP",Toast.LENGTH_SHORT).show();
                 }
@@ -133,7 +141,7 @@ public class MobileVerificationActivity extends AppCompatActivity implements Ini
                         startActivity(intent);
                         finish();
 
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 
                     } else {
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();

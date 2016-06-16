@@ -8,20 +8,23 @@ public class Category {
     private int cat_id;
     private String cat_name;
     private int lang_status;
+    private int priority;
 
     public Category(){}
 
-    public Category(int cat_id,String cat_name,int lang_status){
+    public Category(int cat_id,String cat_name,int lang_status,int priority){
         this.cat_id = cat_id;
         this.cat_name = cat_name;
         this.lang_status = lang_status;
+        this.priority = priority;
     }
 
-    public Category(int id,int cat_id,String cat_name,int lang_status){
+    public Category(int id,int cat_id,String cat_name,int lang_status,int priority){
         this.id = id;
         this.cat_id = cat_id;
         this.cat_name = cat_name;
         this.lang_status = lang_status;
+        this.priority = priority;
     }
 
     public int getId(){
@@ -54,5 +57,13 @@ public class Category {
 
     public void setLang_status(int lang_status){
         this.lang_status = lang_status;
+    }
+
+    public int getPriority(){
+        return priority;
+    }
+
+    public void setPriority(int priority){
+        this.priority = priority;
     }
 }

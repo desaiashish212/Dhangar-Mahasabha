@@ -2,10 +2,12 @@ package com.dhangarmahasabha.innovators;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +30,11 @@ import com.dhangarmahasabha.innovators.fragment.NewsFragment;
 import com.dhangarmahasabha.innovators.model.Category;
 import com.dhangarmahasabha.innovators.navdrawer.NavDrawerItem;
 import com.dhangarmahasabha.innovators.navdrawer.NavDrawerListAdapter;
+import com.dhangarmahasabha.innovators.ui.news.NotificationNewsActivity;
+import com.dhangarmahasabha.innovators.ui.news.ViewNews;
+import com.dhangarmahasabha.innovators.ui.setting.SettingsActivity;
+import com.dhangarmahasabha.innovators.util.ConstCore;
+import com.dhangarmahasabha.innovators.util.DialogUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.innovators.localizationactivity.LocalizationActivity;
@@ -58,13 +65,26 @@ public class MainActivity extends LocalizationActivity {
 	private ArrayList<Category> categoryArrayList;
 	private int status=1;
 	private String language;
+	protected boolean useDoubleBackPressed;
+	private boolean doubleBackToExitPressedOnce;
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	public static final int DOUBLE_BACK_DELAY = 2000;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setDefaultLanguage(getLanguage());
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+//		if(getIntent().getExtras()!=null){
+//			System.out.println("In intentttt");
+//			Bundle bundle = getIntent().getExtras();
+//			Intent intent = new Intent(this, NotificationNewsActivity.class);
+//			intent.putExtra(ConstCore.TAG_NID,bundle.getString(ConstCore.TAG_NID));
+//			intent.putExtra(ConstCore.TAG_STATUS,bundle.getString(ConstCore.TAG_NID));
+//			startActivity(intent);
+//			finish();
+//		}
+		useDoubleBackPressed = true;
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
 		.build();
 		ImageLoader.getInstance().init(config);
@@ -95,7 +115,7 @@ public class MainActivity extends LocalizationActivity {
 
 		for (int i=0; i<categoryArrayList.size();i++){
 
-			navDrawerItems.add(new NavDrawerItem(categoryArrayList.get(i).getCat_name(), navMenuIcons.getResourceId(0, -1), newsPresent(String.valueOf(categoryArrayList.get(i).getCat_id())), newsCount(String.valueOf(categoryArrayList.get(i).getCat_id()))));
+			navDrawerItems.add(new NavDrawerItem(categoryArrayList.get(i).getCat_name(), navMenuIcons.getResourceId(10, -1), newsPresent(String.valueOf(categoryArrayList.get(i).getCat_id())), newsCount(String.valueOf(categoryArrayList.get(i).getCat_id()))));
 		}
 //		// Home
 //		navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1), newsPresent("1"), newsCount("1")));
@@ -147,8 +167,10 @@ public class MainActivity extends LocalizationActivity {
 
 		actionBar.setCustomView(TextViewNewFont);
 		// enabling action bar app icon and behaving it as toggle button
-		actionBar.setDisplayHomeAsUpEnabled(true);
+
 		actionBar.setHomeButtonEnabled(true);
+		actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
+		actionBar.setDisplayHomeAsUpEnabled(true);
 		fragmentManager = getSupportFragmentManager();
 		fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -158,12 +180,14 @@ public class MainActivity extends LocalizationActivity {
 		) {
 			public void onDrawerClosed(View view) {
 				actionBar.setTitle(getResources().getString(R.string.app_name));
+				actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
 				// calling onPrepareOptionsMenu() to show action bar icons
 				invalidateOptionsMenu();
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				actionBar.setTitle(getResources().getString(R.string.app_name));
+				actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back_r);
 				// calling onPrepareOptionsMenu() to hide action bar icons
 				invalidateOptionsMenu();
 			}
@@ -233,7 +257,7 @@ public class MainActivity extends LocalizationActivity {
 		// Handle action bar actions click
 		switch (item.getItemId()) {
 		case R.id.menu_tool:
-				//startActivity(new Intent(MainActivity.this,SettingsActivity.class));
+				startActivity(new Intent(MainActivity.this,SettingsActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -348,11 +372,6 @@ public class MainActivity extends LocalizationActivity {
 				finish();
 			}
 			return false;
-		} else {
-			Toast.makeText(
-					getApplicationContext(),
-					"This device supports Play services, App will work normally",
-					Toast.LENGTH_LONG).show();
 		}
 		return true;
 	}
@@ -363,5 +382,20 @@ public class MainActivity extends LocalizationActivity {
 		super.onResume();
 		checkPlayServices();
 	}
+	@Override
+	public void onBackPressed() {
+		if (doubleBackToExitPressedOnce || !useDoubleBackPressed) {
+			super.onBackPressed();
+			return;
+		}
+		this.doubleBackToExitPressedOnce = true;
+		DialogUtils.show(this, getString(R.string.dlg_click_back_again));
+		new Handler().postDelayed(new Runnable() {
 
+			@Override
+			public void run() {
+				doubleBackToExitPressedOnce = false;
+			}
+		}, DOUBLE_BACK_DELAY);
+	}
 }

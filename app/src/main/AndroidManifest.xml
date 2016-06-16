@@ -2,11 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dhangarmahasabha.innovators">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- Permission: Allow application to write to SDCard -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <permission
         android:name="com.dhangarmahasabha.innovators.permission.C2D_MESSAGE"
@@ -17,10 +16,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -49,14 +49,58 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
+        <activity android:name=".ui.setting.About_asActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme"/>
+        <activity android:name=".ui.setting.SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/action_settings"/>
+        <activity android:name=".ui.setting.UpdateProfileActivity"
+            android:parentActivityName=".ui.setting.SettingsActivity"
+            android:theme="@style/AppTheme"
+            android:label="Update Profile"/>
+        <activity android:name=".ui.setting.AboutDmActivity"
+            android:parentActivityName=".ui.setting.SettingsActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/about_dmt"/>
+        <activity android:name=".ui.setting.PrivacyAndPolicyActivity"
+            android:parentActivityName=".ui.setting.SettingsActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/privacy_and_policy"/>
+        <activity android:name=".ui.setting.DonateActivity"
+            android:parentActivityName=".ui.setting.SettingsActivity"
+            android:theme="@style/AppTheme"
+            android:label="@string/donate_title"/>
+        <activity android:name=".ui.setting.FeedbackActivity"
+            android:parentActivityName=".ui.setting.SettingsActivity"
+            android:theme="@style/AppTheme"
+            android:label="Feedback"/>
         <activity android:name=".ui.news.ViewNews"
+            android:theme="@style/MyAppTheme"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".ui.news.Demo"
             android:theme="@style/MyAppTheme"
             android:parentActivityName=".MainActivity"/>
         <supports-screens android:anyDensity="true"
             android:largeScreens="true"
             android:smallScreens="true" />
+        <receiver
+            android:name=".gcm.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="com.dhangarmahasabha.innovators" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".gcm.GCMNotificationIntentService" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a82e8946bb9a90507a89862b60c238ee55104b16" />
     </application>
 
 

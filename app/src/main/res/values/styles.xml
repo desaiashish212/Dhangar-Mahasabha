@@ -7,10 +7,15 @@
 
     <style name="ActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="drawerArrowStyle">@style/AppTheme.DrawerArrowToggle</item>
+        <item name="android:titleTextStyle">@style/TitleBarTextColor</item>
+    </style>
+
+    <style name="TitleBarTextColor" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/bg_button_login</item>
     </style>
 
     <style name="AppTheme.DrawerArrowToggle" parent="Base.Widget.AppCompat.DrawerArrowToggle">
-        <item name="color">@android:color/white</item>
+        <item name="color">@color/bg_button_login</item>
     </style>
 
     <style name="MyAppTheme" parent="Theme.AppCompat.Light.NoActionBar">

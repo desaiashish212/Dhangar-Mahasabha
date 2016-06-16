@@ -29,6 +29,7 @@ import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.initilization.Initilization;
 import com.dhangarmahasabha.innovators.util.Config;
 import com.dhangarmahasabha.innovators.util.DialogUtils;
+import com.dhangarmahasabha.innovators.util.NetworkUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -55,12 +56,12 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
     private ProgressBar progressBar;
     private AQuery aq;
     private GoogleCloudMessaging gcmObj;
-    PrefManager prefManager;
+    private PrefManager prefManager;
     private String regId = "";
     private static final String REG_ID = "regId";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private ProgressDialog progressDialog;
-
+    private NetworkUtils networkUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
         aq = new AQuery(this);
         prefManager = new PrefManager(this);
         progressDialog = DialogUtils.getProgressDialog(this);
+        networkUtils = new NetworkUtils(this);
 
         ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item,getResources().getStringArray(R.array.state_array));
         spState.setAdapter(stateAdapter);
@@ -90,7 +92,11 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
                                        int arg2, long arg3) {
                 // TODO Auto-generated method stub
                 String selectedState = spState.getSelectedItem().toString();
-                updateCitySpinnerCtrl(selectedState);
+                if(networkUtils.isConnectingToInternet()){
+                    updateCitySpinnerCtrl(selectedState);
+                }else {
+                    Toast.makeText(RegistrationActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+                }
             }
             public void onNothingSelected(AdapterView<?> arg0) {
                 // TODO Auto-generated method stub
@@ -108,11 +114,17 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
                 String mobileNo = edtMobileNo.getText().toString().trim();
                 String state = spState.getSelectedItem().toString();
                 String district = spDistrict.getSelectedItem().toString();
+
                 if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(mobileNo) && !TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)){
                     if (checkPlayServices()) {
-                        progressDialog.show();
+
                         // Register Device in GCM Server
-                        registerInBackground(userName, mobileNo,state,district);
+                        if (networkUtils.isConnectingToInternet()) {
+                            validation(userName,mobileNo,state,district);
+
+                        }else {
+                            Toast.makeText(RegistrationActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }else {
                     Toast.makeText(RegistrationActivity.this,"Fill all field",Toast.LENGTH_LONG).show();
@@ -121,7 +133,30 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
         });
 
     }
+    private void validation(String name,String mobile,String state, String distric) {
+        // updateCurrentUserData();
+        if (name.length()==0) {
 
+            edtUserName.requestFocus();
+            edtUserName.setError("FIELD CANNOT BE EMPTY");
+        }else if (name.length()<=2) {
+
+            edtUserName.requestFocus();
+            edtUserName.setError("NAME MUST BE GREATER THAN 2 CHARACTER");
+        }else if(!name.matches("[a-zA-Z ]+")) {
+            edtUserName.requestFocus();
+            edtUserName.setError("ENTER ONLY ALPHABETICAL CHARACTER");
+        }else if(mobile.length()==0){
+            edtMobileNo.requestFocus();
+            edtMobileNo.setError("FIELD CANNOT BE EMPTY");
+        }else if (mobile.length() < 10 || mobile.length()>10){
+            edtMobileNo.requestFocus();
+            edtMobileNo.setError("Invalid MOBILE NUMBER");
+        }else {
+            progressDialog.show();
+            registerInBackground(name, mobile, state, distric);
+        }
+    }
     public void updateCitySpinnerCtrl(String state) {
         String url = Config.DISTRICT_URL+ state;
         aq.progress(R.id.progressBar1).ajax(url, JSONObject.class, this,"jsonCallback");
@@ -172,10 +207,11 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
             }
             return false;
         } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    "This device supports Play services, App will work normally",
-                    Toast.LENGTH_LONG).show();
+//            Toast.makeText(
+//                    getApplicationContext(),
+//                    "This device supports Play services, App will work normally",
+//                    Toast.LENGTH_LONG).show();
+            System.out.println("This device supports Play services, App will work normally");
         }
         return true;
     }
@@ -208,16 +244,23 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
 
                     PrefManager prefManager = new PrefManager(getApplicationContext());
                     prefManager.createLogin(name,mobile,state,disrict,regId);
-                    requestForSMS(name,mobile,state,disrict,regId);
+                    if (networkUtils.isConnectingToInternet()) {
+                        requestForSMS(name, mobile, state, disrict, regId);
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(RegistrationActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+                    }
 
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Registered with GCM Server successfully.\n\n"
-                                    + msg, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(
+//                            getApplicationContext(),
+//                            "Registered with GCM Server successfully.\n\n"
+//                                    + msg, Toast.LENGTH_SHORT).show();
+                    System.out.println("Registered with GCM Server successfully.\n\n"+ msg);
                 } else {
+                    progressDialog.dismiss();
                     Toast.makeText(
                             getApplicationContext(),
-                            "Reg ID Creation Failed.\n\nEither you haven't enabled Internet or GCM server is busy right now. Make sure you enabled Internet and try registering again after some time."
+                            "Either you haven't enabled Internet or GCM server is busy right now. Make sure you enabled Internet and try registering again after some time."
                                     + msg, Toast.LENGTH_LONG).show();
                 }
             }
@@ -250,7 +293,7 @@ public class RegistrationActivity extends AppCompatActivity implements Initiliza
                         startActivity(intent);
                         finish();
 
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                     //   Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(getApplicationContext(),

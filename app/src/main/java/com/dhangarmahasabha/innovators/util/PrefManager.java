@@ -3,6 +3,8 @@ package com.dhangarmahasabha.innovators.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.dhangarmahasabha.innovators.R;
+
 import java.util.HashMap;
 
 /**
@@ -21,6 +23,7 @@ public class PrefManager {
     private static final String KEY_IS_WAITING_FOR_SMS = "IsWaitingForSms";
     private static final String KEY_MOBILE_NUMBER = "mobile_number";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+    private static final String KEY_IS_CHOOSE_LANG = "isChooseLang";
     private static final String KEY_NAME = "name";
     private static final String KEY_STATE = "state";
     private static final String KEY_DISTRICT = "district";
@@ -30,6 +33,8 @@ public class PrefManager {
     private static final String KEY_PINCODE = "pincode";
     private static final String KEY_OCCUPATION = "occupation";
     private static final String KEY_REG_ID = "reg_id";
+    private static final String KEY_NOTIFICATIONS = "notifications";
+    private static final String KEY_SPLASH = "splash";
 
     public PrefManager(Context context) {
         this._context = context;
@@ -42,8 +47,26 @@ public class PrefManager {
         editor.commit();
     }
 
+    public void setSplash(String splash) {
+        editor.putString(KEY_SPLASH, splash);
+        editor.commit();
+    }
+
+    public String getSplash() {
+        return pref.getString(KEY_SPLASH, _context.getString(R.string.app_name));
+    }
+
     public boolean isWaitingForSms() {
         return pref.getBoolean(KEY_IS_WAITING_FOR_SMS, false);
+    }
+
+    public void setIsChooseLang(boolean isWaiting) {
+        editor.putBoolean(KEY_IS_CHOOSE_LANG, isWaiting);
+        editor.commit();
+    }
+
+    public boolean isChooseLang() {
+        return pref.getBoolean(KEY_IS_CHOOSE_LANG, false);
     }
 
     public void setMobileNumber(String mobileNumber) {
@@ -134,5 +157,24 @@ public class PrefManager {
         profile.put("pincode", pref.getString(KEY_PINCODE, null));
         profile.put("occupation", pref.getString(KEY_OCCUPATION, null));
         return profile;
+    }
+
+    public void addNotification(String notification) {
+
+        // get old notifications
+        String oldNotifications = getNotifications();
+
+        if (oldNotifications != null) {
+            oldNotifications += "|" + notification;
+        } else {
+            oldNotifications = notification;
+        }
+
+        editor.putString(KEY_NOTIFICATIONS, oldNotifications);
+        editor.commit();
+    }
+
+    public String getNotifications() {
+        return pref.getString(KEY_NOTIFICATIONS, null);
     }
 }

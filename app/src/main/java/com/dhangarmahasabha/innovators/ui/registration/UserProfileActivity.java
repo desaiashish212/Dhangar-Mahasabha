@@ -33,6 +33,7 @@ import com.dhangarmahasabha.innovators.R;
 import com.dhangarmahasabha.innovators.initilization.Initilization;
 import com.dhangarmahasabha.innovators.util.Config;
 import com.dhangarmahasabha.innovators.util.DialogUtils;
+import com.dhangarmahasabha.innovators.util.NetworkUtils;
 import com.dhangarmahasabha.innovators.util.PrefManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,6 +47,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserProfileActivity extends AppCompatActivity implements Initilization {
 
@@ -63,6 +66,7 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
     private PrefManager prefManager;
     static final int DATE_PICKER_ID = 1111;
     private ProgressDialog progressDialog;
+    private NetworkUtils networkUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +90,13 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
         btnUpdateProfile = (Button) findViewById(R.id.btn_udate_profile);
         aq = new AQuery(this);
         prefManager = new PrefManager(this);
+        networkUtils = new NetworkUtils(this);
         System.out.println("District:"+prefManager.getDistrict());
-        updateCitySpinnerCtrl(prefManager.getDistrict());
+        if (networkUtils.isConnectingToInternet()) {
+            updateCitySpinnerCtrl(prefManager.getDistrict());
+        }else {
+            Toast.makeText(UserProfileActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+        }
         progressDialog = DialogUtils.getProgressDialog(this);
 
     }
@@ -112,12 +121,77 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
                 String city = setText(spCity.getSelectedItem().toString());
                 String pincode = setText(edtPinCode.getText().toString().trim());
                 String occopation = setText(edtOccupation.getText().toString().trim());
-                progressDialog.show();
-                updateProfile(name,mobile,email,dob,city,pincode,occopation);
+                if (networkUtils.isConnectingToInternet()) {
+
+                    validation(name,mobile,email,dob,city,pincode,occopation);
+                }else {
+                    Toast.makeText(UserProfileActivity.this,"Check your internet connection",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
 
+    }
+
+    private void validation(final String name, final String mobile, final String email,final String dob,final String city,final String pincode,final String occupation) {
+        // updateCurrentUserData();
+        if (name.length()==0) {
+
+            edtName.requestFocus();
+            edtName.setError("FIELD CANNOT BE EMPTY");
+        }else if (name.length()<=2) {
+
+            edtName.requestFocus();
+            edtName.setError("NAME MUST BE GREATER THAN 2 CHARACTER");
+        }else if(!name.matches("[a-zA-Z ]+")) {
+            edtName.requestFocus();
+            edtName.setError("ENTER ONLY ALPHABETICAL CHARACTER");
+        }else if(mobile.length()==0){
+            edtMobile.requestFocus();
+            edtMobile.setError("FIELD CANNOT BE EMPTY");
+        }else if (mobile.length() < 10 || mobile.length()>10){
+            edtMobile.requestFocus();
+            edtMobile.setError("Invalid MOBILE NUMBER");
+        }else if(email.length()==0){
+            edtEmail.requestFocus();
+            edtEmail.setError("FIELD CANNOT BE EMPTY");
+        }else if (!isValidEmail(email)){
+            edtEmail.requestFocus();
+            edtEmail.setError("Invalid Email");
+        }else if(dob.length()==0){
+            tvDob.requestFocus();
+            tvDob.setError("FIELD CANNOT BE EMPTY");
+        }else if(pincode.length()==0){
+            edtPinCode.requestFocus();
+            edtPinCode.setError("FIELD CANNOT BE EMPTY");
+        }else if (pincode.length() < 6 || pincode.length()>6){
+            edtPinCode.requestFocus();
+            edtPinCode.setError("Invalid PIN CODE");
+        }else if (occupation.length()==0) {
+
+            edtOccupation.requestFocus();
+            edtOccupation.setError("FIELD CANNOT BE EMPTY");
+        }else if (occupation.length()<=2) {
+
+            edtOccupation.requestFocus();
+            edtOccupation.setError("NAME MUST BE GREATER THAN 2 CHARACTER");
+        }else if(!occupation.matches("[a-zA-Z ]+")) {
+            edtOccupation.requestFocus();
+            edtOccupation.setError("ENTER ONLY ALPHABETICAL CHARACTER");
+        }else {
+            progressDialog.show();
+            updateProfile(name,mobile,email,dob,city,pincode,occupation);
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
     public void initSetText(){
         HashMap<String, String> profile = prefManager.getUserDetails();
@@ -196,7 +270,7 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
                         startActivity(new Intent(UserProfileActivity.this,ChooseLanguageActivity.class));
                         finish();
 
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(getApplicationContext(),
@@ -204,14 +278,12 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
                                 Toast.LENGTH_LONG).show();
                     }
 
-                    //progressBar.setVisibility(View.GONE);
 
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(),
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
 
-                  //  progressBar.setVisibility(View.GONE);
                 }
 
             }
@@ -223,7 +295,6 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
                 progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
-               // progressBar.setVisibility(View.GONE);
             }
         }) {
 
@@ -265,9 +336,6 @@ public class UserProfileActivity extends AppCompatActivity implements Initilizat
         switch (id) {
             case DATE_PICKER_ID:
 
-                // open datepicker dialog.
-                // set date picker for current date
-                // add pickerListener listner to date picker
                 return new DatePickerDialog(this, pickerListener, 1992, 05,19);
         }
         return null;

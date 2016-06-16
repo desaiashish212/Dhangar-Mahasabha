@@ -65,4 +65,9 @@ public class NavDrawerListAdapter extends BaseAdapter {
         return convertView;
 	}
 
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+	}
+
 }

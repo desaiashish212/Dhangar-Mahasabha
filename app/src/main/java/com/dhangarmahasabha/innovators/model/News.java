@@ -12,12 +12,13 @@ public class News {
     private String status;
     private String date;
     private String path;
+    private String path1;
     private Byte[] image;
 
     public News() {
     }
 
-    public News(int nid, String title, String news, String time, String date, String status, String path, Byte[] image) {
+    public News(int nid, String title, String news, String time, String date, String status, String path,String path1, Byte[] image) {
         this.nid = nid;
         this.title = title;
         this.news = news;
@@ -25,10 +26,11 @@ public class News {
         this.date = date;
         this.status = status;
         this.path = path;
+        this.path1 = path1;
         this.image = image;
     }
 
-    public News(int id, int nid, String title, String news, String time, String date, String status, String path, Byte[] image) {
+    public News(int id, int nid, String title, String news, String time, String date, String status, String path,String path1, Byte[] image) {
         this.id = id;
         this.nid = nid;
         this.title = title;
@@ -37,6 +39,7 @@ public class News {
         this.date = date;
         this.status = status;
         this.path = path;
+        this.path1 = path1;
         this.image = image;
     }
 
@@ -96,4 +99,7 @@ public class News {
 
     public void setpath(String path){this.path=path;}
 
+    public String getpath1(){ return path1;}
+
+    public void setpath1(String path1){this.path1=path1;}
 }
